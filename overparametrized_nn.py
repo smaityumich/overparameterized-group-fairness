@@ -16,8 +16,7 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, opt
     x, _ = train_data
     _, input_shape = x.shape
     inputs = tf.keras.layers.Input(shape=(input_shape,))
-    hidden = tf.keras.layers.Dense(nodes, activation="relu", name="hidden", kernel_regularizer=tf.keras.regularizers.L2(l2_reg),\
-        bias_regularizer=tf.keras.regularizers.L2(l2_reg))
+    hidden = tf.keras.layers.Dense(nodes, activation="relu", name="hidden", trainable = False)
     outputs = tf.keras.layers.Dense(1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg),\
         bias_regularizer=tf.keras.regularizers.L2(l2_reg))(hidden(inputs))
     model = tf.keras.models.Model(inputs = inputs, outputs = outputs)
