@@ -14,7 +14,7 @@ for f in os.listdir(arg.target_dir):
 
 
 
-os.system("perl -pe \'chomp if eof\' "+arg.dest_file)
+#os.system("perl -pe \'chomp if eof\' "+arg.dest_file)
 
 
 if arg.clear:
