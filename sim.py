@@ -12,8 +12,9 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, opt
     x, _ = train_data
     _, input_shape = x.shape
     inputs = tf.keras.layers.Input(shape=(input_shape,))
-    hidden = tf.keras.layers.Dense(nodes, activation="relu", name="hidden", kernel_regularizer=tf.keras.regularizers.L2(l2_reg),\
-        bias_regularizer=tf.keras.regularizers.L2(l2_reg))#trainable = False)
+    hidden = tf.keras.layers.Dense(nodes, activation="relu", name="hidden", trainable = False)
+ #kernel_regularizer=tf.keras.regularizers.L2(l2_reg),\
+        #bias_regularizer=tf.keras.regularizers.L2(l2_reg)) #trainable = False)
     outputs = tf.keras.layers.Dense(1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg),\
         bias_regularizer=tf.keras.regularizers.L2(l2_reg))(hidden(inputs))
     model = tf.keras.models.Model(inputs = inputs, outputs = outputs)
@@ -29,7 +30,7 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, opt
 
 
 x1, x2 = np.random.normal(size = (200, 10)), np.random.normal(size = (10, 10))
-beta, delta = 4* np.array([1/np.sqrt(10)] * 10).reshape((-1,1)), 4*np.array([-2/np.sqrt(10)] + [0]*9).reshape((-1,1))
+beta, delta = 10* np.array([1/np.sqrt(10)] * 10).reshape((-1,1)), 10*np.array([-2/np.sqrt(10)] + [0]*9).reshape((-1,1))
 y1, y2 = x1 @ beta + 0.1 * np.random.normal(size=(200, 1)), x2 @ (beta + delta) + 0.1 * np.random.normal(size = (10, 1))
 train_data = np.vstack((x1, x2)), np.vstack((y1, y2))
 
@@ -50,7 +51,7 @@ if not os.path.exists('temp/'):
     os.mkdir('temp/')
 
 
-with open(f'temp2/mse_{iteration}.txt', 'w') as f:
+with open(f'temp/mse_{iteration}.txt', 'w') as f:
     for nodes, epochs in itertools.product(nodes_list, epochs_list):
         train_mse, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
              test_minority, nodes=int(nodes), optimizer='Adam', epochs=epochs)
