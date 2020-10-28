@@ -1,5 +1,10 @@
 # Overparametrized Group Fairness
 
-### Interactive plot for simulation 
+### Simulation plots
 
-[Interactive plot for mse](https://htmlpreview.github.io/?https://github.com/smaityumich/overparameterized-group-fairness/blob/master/temp-plot.html)
+| beta | Span <td colspan=2>Trainable |
+| --- | --- | --- |
+| norm-beta | only last layer | all layers | 
+| --- | --- | --- |
+
+
