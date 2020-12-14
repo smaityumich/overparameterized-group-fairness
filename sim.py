@@ -48,17 +48,17 @@ for beta_norm in beta_norms:
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
     #beta, delta = 10* np.array([1/np.sqrt(10)] * 10).reshape((-1,1)), 10*np.array([-2/np.sqrt(10)] + [0]*9).reshape((-1,1))
     beta, delta = beta_norm * np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
-    y1, y2 = x1 @ (beta + delta) + 0.1 * np.random.normal(size=(n1, 1)), x2 @ (beta - delta) + 0.1 * np.random.normal(size = (n2, 1))
+    y1, y2 = x1 @ (beta +0* delta) + 0.1 * np.random.normal(size=(n1, 1)), x2 @ (beta+ delta) + 0.1 * np.random.normal(size = (n2, 1))
     sample_weights = np.array([(1-p)] * n1 + [p] * n2)
     train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
 
 
     x_test = np.random.normal(size = (1000, 10))
-    y_test = x_test @ (beta - delta) + 0.1 * np.random.normal(size = (1000, 1))
+    y_test = x_test @ (beta + delta) + 0.1 * np.random.normal(size = (1000, 1))
     test_minority = x_test, y_test
 
     x_test = np.random.normal(size = (1000, 10))
-    y_test = x_test @ (beta + delta) + 0.1 * np.random.normal(size = (1000, 1))
+    y_test = x_test @ (beta + 0*delta) + 0.1 * np.random.normal(size = (1000, 1))
     test_majority = x_test, y_test
 
 
@@ -70,7 +70,7 @@ for beta_norm in beta_norms:
                 test_minority, nodes=int(nodes), optimizer='Adam', epochs=epochs)
             output = {'nodes': nodes, 'beta-norm': beta_norm, 'epochs': epochs, 'train-mse':train_mse,\
                 'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
-                    'minority-mse': minority_mse, 'trainable': 'last-layer'}
+                    'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'different-core-over-envs'}
             f.writelines(str(output)+"\n")
     
 
