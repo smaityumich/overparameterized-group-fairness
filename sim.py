@@ -34,7 +34,8 @@ n, p = 3000, 0.9
 n1, n2 = int(n * p), int(n * (1-p))
 x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
 #beta, delta = 10* np.array([1/np.sqrt(10)] * 10).reshape((-1,1)), 10*np.array([-2/np.sqrt(10)] + [0]*9).reshape((-1,1))
-beta, delta = 1* np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
+beta_norm = 1
+beta, delta = beta_norm * np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
 y1, y2 = x1 @ (beta + delta) + 0.1 * np.random.normal(size=(n1, 1)), x2 @ (beta - delta) + 0.1 * np.random.normal(size = (n2, 1))
 sample_weights = np.array([(1-p)] * n1 + [p] * n2)
 train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
@@ -60,8 +61,9 @@ with open(f'temp/mse_{iteration}.txt', 'w') as f:
     for nodes, epochs in itertools.product(nodes_list, epochs_list):
         train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
              test_minority, nodes=int(nodes), optimizer='Adam', epochs=epochs)
-        output = {'nodes': nodes, 'epochs': epochs, 'train-mse':train_mse,\
-             'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse, 'minority-mse': minority_mse}
+        output = {'nodes': nodes, 'beta-norm': beta_norm, 'epochs': epochs, 'train-mse':train_mse,\
+             'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
+                  'minority-mse': minority_mse}
         f.writelines(str(output)+"\n")
     
 
