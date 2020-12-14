@@ -11,6 +11,7 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, opt
     # Build model
     x, y, sample_weight = train_data
     _, input_shape = x.shape
+    l2_reg = 0.001/epochs
     inputs = tf.keras.layers.Input(shape=(input_shape,))
     hidden = tf.keras.layers.Dense(nodes, activation="relu", name="hidden", \
  kernel_regularizer=tf.keras.regularizers.L2(l2_reg),\
@@ -36,8 +37,8 @@ beta_norms = [1, 5, 10]
 
 
 iteration = int(float(sys.argv[1]))
-nodes_list = 10* 2 **np.array(range(12))
-epochs_list = [50, 500, 5000]
+nodes_list = 10* 4 **np.array(range(6))
+epochs_list = [50, 5000]
 
 if not os.path.exists('temp/'):
     os.mkdir('temp/')
