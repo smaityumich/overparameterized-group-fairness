@@ -9,15 +9,15 @@ parser.add_argument('--nodes', dest='nodes', type= int, nargs='*', default=[100]
 args = parser.parse_args()
 
 
-def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, optimizer = 'sgd', l2_reg = 0.001,\
-     epochs = 1000):
+def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, optimizer = 'sgd', l2_reg = 0.00001,\
+     epochs = 400):
     
     # Build model
     x, _ = train_data
     _, input_shape = x.shape
     inputs = tf.keras.layers.Input(shape=(input_shape,))
     hidden = tf.keras.layers.Dense(nodes, activation="relu", name="hidden", kernel_regularizer=tf.keras.regularizers.L2(l2_reg),\
-        bias_regularizer=tf.keras.regularizers.L2(l2_reg))#trainable = False)
+        bias_regularizer=tf.keras.regularizers.L2(l2_reg), trainable = False)
     outputs = tf.keras.layers.Dense(1, kernel_regularizer=tf.keras.regularizers.L2(l2_reg),\
         bias_regularizer=tf.keras.regularizers.L2(l2_reg))(hidden(inputs))
     model = tf.keras.models.Model(inputs = inputs, outputs = outputs)
@@ -33,17 +33,17 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, opt
 
 
 x1, x2 = np.random.normal(size = (3000, 10)), np.random.normal(size = (300, 10))
-beta, delta = np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.array([0]* 5 + [0.1]*5).reshape((-1,1))
-y1, y2 = x1 @ beta + 0.1 * np.random.normal(size=(3000, 1)), x2 @ (beta + delta) + 0.1 * np.random.normal(size = (300, 1))
+beta, delta = 2 * np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.array([0]* 5 + [1]*5).reshape((-1,1))
+y1, y2 = x1 @ (beta + delta) + 0.1 * np.random.normal(size=(3000, 1)), x2 @ (beta - delta) + 0.1 * np.random.normal(size = (300, 1))
 train_data = np.vstack((x1, x2)), np.vstack((y1, y2))
 
 
 x_test = np.random.normal(size = (1000, 10))
-y_test = x_test @ (beta + delta) + 0.1 * np.random.normal(size = (1000, 1))
+y_test = x_test @ (beta - delta) + 0.1 * np.random.normal(size = (1000, 1))
 test_minority = x_test, y_test
 
 x_test = np.random.normal(size = (1000, 10))
-y_test = x_test @ beta + 0.1 * np.random.normal(size = (1000, 1))
+y_test = x_test @ (beta + delta) + 0.1 * np.random.normal(size = (1000, 1))
 test_majority = x_test, y_test
 
 #nodes = int(float(sys.argv[1]))
