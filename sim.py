@@ -33,7 +33,7 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, opt
 
 n, p = 2000, 0.9
 n1, n2 = int(n * p), int(n * (1-p))
-beta_norms = [1, 5, 10]
+beta_norms = [0.1]
 
 
 iteration = int(float(sys.argv[1]))
