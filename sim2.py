@@ -1,6 +1,3 @@
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
 import numpy as np
 import itertools
 import sys, os
@@ -37,11 +34,9 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
 
     # Fit model
     if weighted:
-        z = z * sample_weight.reshape((-1, 1))
-    if n < nodes:
-        beta = z.T @ inv(z @ z.T) @ y
-    else: 
-        beta = inv( z.T @ z) @ z.T @ y
+        z = z * np.sqrt(sample_weight.reshape((-1, 1)))
+    
+    beta = np.linalg.lstsq(z, y)[0]
     
 
     # Evaluate 
@@ -53,7 +48,8 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
 
 n, p = 200, 0.9
 n1, n2 = int(n * p), int(n * (1-p))
-beta_norms = [0.01, 1, 5, 10]
+beta_norms = [0.01, 1, 10]
+sigma = 0.1
 
 
 iteration = int(float(sys.argv[1]))
@@ -68,17 +64,17 @@ for beta_norm in beta_norms:
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
     #beta, delta = 10* np.array([1/np.sqrt(10)] * 10).reshape((-1,1)), 10*np.array([-2/np.sqrt(10)] + [0]*9).reshape((-1,1))
     beta, delta = beta_norm * np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
-    y1, y2 = x1 @ (beta +1* delta) + 0.1 * np.random.normal(size=(n1, 1)), x2 @ (beta - delta) + 0.1 * np.random.normal(size = (n2, 1))
+    y1, y2 = x1 @ (beta +1* delta) + sigma * np.random.normal(size=(n1, 1)), x2 @ (beta - delta) + sigma * np.random.normal(size = (n2, 1))
     sample_weights = np.array([(1-p)] * n1 + [p] * n2)
     train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
 
 
     x_test = np.random.normal(size = (1000, 10))
-    y_test = x_test @ (beta - delta) + 0.1 * np.random.normal(size = (1000, 1))
+    y_test = x_test @ (beta - delta) + sigma * np.random.normal(size = (1000, 1))
     test_minority = x_test, y_test
 
     x_test = np.random.normal(size = (1000, 10))
-    y_test = x_test @ (beta + 1*delta) + 0.1 * np.random.normal(size = (1000, 1))
+    y_test = x_test @ (beta + 1*delta) + sigma * np.random.normal(size = (1000, 1))
     test_majority = x_test, y_test
 
 
@@ -96,17 +92,17 @@ for beta_norm in beta_norms:
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
     #beta, delta = 10* np.array([1/np.sqrt(10)] * 10).reshape((-1,1)), 10*np.array([-2/np.sqrt(10)] + [0]*9).reshape((-1,1))
     beta, delta = beta_norm * np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
-    y1, y2 = x1 @ (beta) + 0.1 * np.random.normal(size=(n1, 1)), x2 @ (beta + delta) + 0.1 * np.random.normal(size = (n2, 1))
+    y1, y2 = x1 @ (beta) + sigma * np.random.normal(size=(n1, 1)), x2 @ (beta + delta) + sigma * np.random.normal(size = (n2, 1))
     sample_weights = np.array([(1-p)] * n1 + [p] * n2)
     train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
 
 
     x_test = np.random.normal(size = (1000, 10))
-    y_test = x_test @ (beta + delta) + 0.1 * np.random.normal(size = (1000, 1))
+    y_test = x_test @ (beta + delta) + sigma * np.random.normal(size = (1000, 1))
     test_minority = x_test, y_test
 
     x_test = np.random.normal(size = (1000, 10))
-    y_test = x_test @ (beta) + 0.1 * np.random.normal(size = (1000, 1))
+    y_test = x_test @ (beta) + sigma * np.random.normal(size = (1000, 1))
     test_majority = x_test, y_test
 
 
