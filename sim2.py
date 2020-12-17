@@ -5,7 +5,7 @@ from scipy.linalg import inv
 
 def hidden_layer(x, w):
     z = x @ w
-    z[z<0]=0
+    #z[z<0]=0
     return z
 
 def predict(x, weights):
@@ -27,7 +27,7 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
     
     # Build model
     x, y, sample_weight = train_data
-    n, input_shape = x.shape
+    _, input_shape = x.shape
     w = np.random.normal(size = (input_shape, nodes))
     z = hidden_layer(x, w)
 
@@ -48,7 +48,7 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
 
 n, p = 200, 0.9
 n1, n2 = int(n * p), int(n * (1-p))
-beta_norms = [0.01, 1, 10]
+SNRs = [0.01, 1, 10]
 sigma = 0.1
 
 
@@ -60,11 +60,11 @@ if not os.path.exists('temp/'):
     os.mkdir('temp/')
 
 
-for beta_norm in beta_norms:
+for SNR in SNRs:
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
-    #beta, delta = 10* np.array([1/np.sqrt(10)] * 10).reshape((-1,1)), 10*np.array([-2/np.sqrt(10)] + [0]*9).reshape((-1,1))
-    beta, delta = beta_norm * np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
-    y1, y2 = x1 @ (beta +1* delta) + sigma * np.random.normal(size=(n1, 1)), x2 @ (beta - delta) + sigma * np.random.normal(size = (n2, 1))
+    beta, delta = np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
+    beta, delta =  beta / np.linalg.norm(beta), (1/SNR) * delta / np.linalg.norm(delta)
+    y1, y2 = x1 @ (beta + delta) + sigma * np.random.normal(size=(n1, 1)), x2 @ (beta - delta) + sigma * np.random.normal(size = (n2, 1))
     sample_weights = np.array([(1-p)] * n1 + [p] * n2)
     train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
 
@@ -74,24 +74,24 @@ for beta_norm in beta_norms:
     test_minority = x_test, y_test
 
     x_test = np.random.normal(size = (1000, 10))
-    y_test = x_test @ (beta + 1*delta) + sigma * np.random.normal(size = (1000, 1))
+    y_test = x_test @ (beta + delta) + sigma * np.random.normal(size = (1000, 1))
     test_majority = x_test, y_test
 
 
 
 
-    with open(f'temp/mse_{iteration}_{beta_norm}_same.txt', 'w') as f:
+    with open(f'temp/mse_{iteration}_{SNR}_same.txt', 'w') as f:
         for nodes in nodes_list:
             train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
                 test_minority, nodes=int(nodes), weighted=False)
-            output = {'nodes': nodes, 'beta-norm': beta_norm, 'train-mse':train_mse,\
+            output = {'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
                 'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
                     'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'same-core'}
             f.writelines(str(output)+"\n")
 
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
-    #beta, delta = 10* np.array([1/np.sqrt(10)] * 10).reshape((-1,1)), 10*np.array([-2/np.sqrt(10)] + [0]*9).reshape((-1,1))
-    beta, delta = beta_norm * np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
+    beta, delta = np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
+    beta, delta =  beta / np.linalg.norm(beta), (1/SNR) * delta / np.linalg.norm(delta)
     y1, y2 = x1 @ (beta) + sigma * np.random.normal(size=(n1, 1)), x2 @ (beta + delta) + sigma * np.random.normal(size = (n2, 1))
     sample_weights = np.array([(1-p)] * n1 + [p] * n2)
     train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
@@ -108,11 +108,11 @@ for beta_norm in beta_norms:
 
 
 
-    with open(f'temp/mse_{iteration}_{beta_norm}_diff.txt', 'w') as f:
+    with open(f'temp/mse_{iteration}_{SNR}_diff.txt', 'w') as f:
         for nodes in nodes_list:
             train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
                 test_minority, nodes=int(nodes), weighted=False)
-            output = {'nodes': nodes, 'beta-norm': beta_norm, 'train-mse':train_mse,\
+            output = {'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
                 'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
                     'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'diff-core'}
             f.writelines(str(output)+"\n")
