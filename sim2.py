@@ -2,6 +2,7 @@ import numpy as np
 import itertools
 import sys, os
 from scipy.linalg import inv
+np.random.seed(1000)
 
 def hidden_layer(x, w):
     z = x @ w
@@ -28,7 +29,7 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
     # Build model
     x, y, sample_weight = train_data
     _, input_shape = x.shape
-    w = np.random.normal(size = (input_shape, nodes))
+    w = np.load(f'weights/w_{input_shape}_{nodes}.npy') #np.random.normal(size = (input_shape, nodes))
     z = hidden_layer(x, w)
 
 
@@ -53,7 +54,8 @@ sigma = 0.1
 
 
 iteration = int(float(sys.argv[1]))
-nodes_list = 10* 2 **np.array(range(14))
+gammas = np.logspace(0.05, 1.5, num = 10)
+nodes_list = np.rint(n * gammas).astype('int')
 
 
 if not os.path.exists('temp/'):
