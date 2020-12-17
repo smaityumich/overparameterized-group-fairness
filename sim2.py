@@ -6,7 +6,7 @@ from scipy.linalg import inv
 
 def hidden_layer(x, w):
     z = x @ w
-    z[z<0]=0
+    #z[z<0]=0
     return z
 
 def predict(x, weights):
