@@ -2,11 +2,11 @@ import numpy as np
 import itertools
 import sys, os
 from scipy.linalg import inv
-np.random.seed(1000)
+#np.random.seed(1000)
 
 def hidden_layer(x, w):
     z = x @ w
-    #z[z<0]=0
+    z[z<0]=0
     return z
 
 def predict(x, weights):
