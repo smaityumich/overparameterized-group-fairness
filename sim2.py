@@ -47,15 +47,15 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
          evaluate(test_minority, weights = [w, beta])
 
 
-n, p = 200, 0.9
+n, p = 1000, 0.9
 n1, n2 = int(n * p), int(n * (1-p))
 SNRs = [0.01, 0.1, 1, 10, 100]
 sigma = 0.1
 
 
 iteration = int(float(sys.argv[1]))
-gammas = np.logspace(0.05, 1.5, num = 10)
-nodes_list = np.rint(n * gammas).astype('int')
+gammas = np.logspace(0, 3, num = 10)
+nodes_list = np.rint(10 * gammas).astype('int')
 
 
 if not os.path.exists('temp/'):
