@@ -67,7 +67,7 @@ if not os.path.exists('temp/'):
 for SNR in SNRs:
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
     beta, delta = np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
-    beta, delta =  SNR * beta / np.linalg.norm(beta), (1) * delta / np.linalg.norm(delta)
+    beta, delta =  5 * beta / np.linalg.norm(beta), (1/SNR) * delta / np.linalg.norm(delta)
     y1, y2 = x1 @ (beta + delta) + sigma * np.random.normal(size=(n1, 1)), x2 @ (beta - delta) + sigma * np.random.normal(size = (n2, 1))
     sample_weights = np.array([(1-p)] * n1 + [p] * n2)
     train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
@@ -106,7 +106,7 @@ for SNR in SNRs:
 
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
     beta, delta = np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
-    beta, delta =  SNR * beta / np.linalg.norm(beta), (1) * delta / np.linalg.norm(delta)
+    beta, delta =  5 * beta / np.linalg.norm(beta), (1/SNR) * delta / np.linalg.norm(delta)
     y1, y2 = x1 @ (beta + delta) + sigma * np.random.normal(size=(n1, 1)), x2 @ (beta) + sigma * np.random.normal(size = (n2, 1))
     sample_weights = np.array([(1-p)] * n1 + [p] * n2)
     train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
