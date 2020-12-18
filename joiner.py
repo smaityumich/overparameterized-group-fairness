@@ -7,7 +7,8 @@ parser.add_argument('--dir', dest='target_dir', default='files/', help='Target d
 parser.add_argument('--clear', default = 0, help='Clear files in target directory')
 arg = parser.parse_args()
 
-
+if os.path.exists(arg.dest_file):
+    os.system('rm '+arg.dest_file)
 for f in os.listdir(arg.target_dir):
     filename = arg.target_dir + f
     os.system("cat "+filename+" >> "+arg.dest_file)

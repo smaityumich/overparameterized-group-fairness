@@ -14,7 +14,7 @@ def sample_from_sphere(n, d):
 
 def hidden_layer(x, w):
     z = x @ w
-    #z[z<0]=0
+    z[z<0]=0
     return z
 
 def predict(x, weights):
@@ -39,12 +39,13 @@ def mse_overparameter(train_data, test_majority, test_minority, w, nodes = 100, 
     x, y, sample_weight = train_data
     
     z = hidden_layer(x, w)
-    if weighted:
-        z = z * np.sqrt(sample_weight.reshape((-1, 1)))
     # Fit model
-    beta = np.linalg.lstsq(z, y)[0]
-    b = w @ beta 
-    print('Estimated beta: ' + str(b.reshape((-1,))))
+    
+    z_w = z * np.sqrt(sample_weight.reshape((-1, 1)))
+    y_w = y * np.sqrt(sample_weight.reshape((-1, 1)))
+    # Fit model
+    beta = np.linalg.lstsq(z_w, y_w)[0]
+    
     
     # Evaluate 
     return evaluate((x, y), weights = [w, beta]),\
@@ -81,6 +82,6 @@ test_majority = x_test, y_test
 #nodes = int(float(sys.argv[1]))
 for nodes in args.nodes:
     w = sample_from_sphere(10, nodes)#np.random.normal(size = (10, nodes))/np.sqrt(nodes)
-    train_mse, majority_mse, minority_mse = mse_overparameter(train_data, test_majority, test_minority, w = w, nodes=nodes, weighted=False)
+    train_mse, majority_mse, minority_mse = mse_overparameter(train_data, test_majority, test_minority, w = w, nodes=nodes, weighted=True)
     print(f'# Hidden nodes: {nodes}\nTrain mse: {train_mse}\nTest mse for majority: {majority_mse}\nTest mse for minority group: {minority_mse}\n\n')
 

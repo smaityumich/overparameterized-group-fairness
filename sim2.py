@@ -6,7 +6,7 @@ from scipy.linalg import inv
 
 def hidden_layer(x, w):
     z = x @ w
-    #z[z<0]=0
+    z[z<0]=0
     return z
 
 def predict(x, weights):
@@ -33,11 +33,11 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
     z = hidden_layer(x, w)
 
 
-    # Fit model
-    if weighted:
-        z = z * np.sqrt(sample_weight.reshape((-1, 1)))
     
-    beta = np.linalg.lstsq(z, y)[0]
+    z_w = z * np.sqrt(sample_weight.reshape((-1, 1)))
+    y_w = y * np.sqrt(sample_weight.reshape((-1, 1)))
+    
+    beta = np.linalg.lstsq(z_w, y_w)[0]
     
 
     # Evaluate 
