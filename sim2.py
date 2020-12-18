@@ -33,11 +33,13 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
     z = hidden_layer(x, w)
 
 
+    if weighted:
+        z_w = z * np.sqrt(sample_weight.reshape((-1, 1)))
+        y_w = y * np.sqrt(sample_weight.reshape((-1, 1)))
+        beta = np.linalg.lstsq(z_w, y_w)[0]
     
-    z_w = z * np.sqrt(sample_weight.reshape((-1, 1)))
-    y_w = y * np.sqrt(sample_weight.reshape((-1, 1)))
-    
-    beta = np.linalg.lstsq(z_w, y_w)[0]
+    else:
+        beta = np.linalg.lstsq(z, y)[0]
     
 
     # Evaluate 
@@ -86,10 +88,21 @@ for SNR in SNRs:
         for nodes in nodes_list:
             train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
                 test_minority, nodes=int(nodes), weighted=False)
-            output = {'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
+            output = {'optimization': 'ERM', 'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
                 'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
                     'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'same-core'}
             f.writelines(str(output)+"\n")
+
+
+            train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
+                test_minority, nodes=int(nodes), weighted=True)
+            output = {'optimization': 'weighted-ERM', 'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
+                'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
+                    'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'same-core'}
+            f.writelines(str(output)+"\n")
+
+
+
 
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
     beta, delta = np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
@@ -114,7 +127,14 @@ for SNR in SNRs:
         for nodes in nodes_list:
             train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
                 test_minority, nodes=int(nodes), weighted=False)
-            output = {'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
+            output = {'optimization': 'ERM', 'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
+                'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
+                    'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'diff-core'}
+            f.writelines(str(output)+"\n")
+    
+            train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
+                test_minority, nodes=int(nodes), weighted=True)
+            output = {'optimization': 'weighted-ERM', 'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
                 'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
                     'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'diff-core'}
             f.writelines(str(output)+"\n")
