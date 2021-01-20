@@ -56,7 +56,7 @@ sigma = 0.1
 
 
 iteration = int(float(sys.argv[1]))
-gammas = np.logspace(0, 3, num = 10)
+gammas = np.logspace(0, 4 , num = 10)
 nodes_list = np.rint(10 * gammas).astype('int')
 
 
