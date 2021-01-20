@@ -51,13 +51,13 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
 
 n, p = 900, 0.9
 n1, n2 = int(n * p), int(n * (1-p))
-SNRs = [0.01, 0.1, 1, 10, 100]
+SNRs = [0.001, 0.01, 0.1, 1, 10, 100]
 sigma = 0.1
 
 
 iteration = int(float(sys.argv[1]))
-gammas = np.logspace(0, 4 , num = 10)
-nodes_list = np.rint(10 * gammas).astype('int')
+gammas = np.logspace(0, 3 , num = 10)
+nodes_list = np.rint(50 * gammas).astype('int')
 
 
 if not os.path.exists('temp/'):
@@ -65,9 +65,10 @@ if not os.path.exists('temp/'):
 
 
 for SNR in SNRs:
+    sigma = SNR
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
     beta, delta = np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
-    beta, delta =  5 * beta / np.linalg.norm(beta), (1/SNR) * delta / np.linalg.norm(delta)
+    beta, delta =  5 * beta / np.linalg.norm(beta), 1 * delta / np.linalg.norm(delta)
     y1, y2 = x1 @ (beta + delta) + sigma * np.random.normal(size=(n1, 1)), x2 @ (beta - delta) + sigma * np.random.normal(size = (n2, 1))
     sample_weights = np.array([(1-p)] * n1 + [p] * n2)
     train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
@@ -84,7 +85,7 @@ for SNR in SNRs:
 
 
 
-    with open(f'temp/mse_{iteration}_{SNR}_same.txt', 'w') as f:
+    with open(f'temp2/mse_{iteration}_{SNR}_same.txt', 'w') as f:
         for nodes in nodes_list:
             train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
                 test_minority, nodes=int(nodes), weighted=False)
@@ -106,7 +107,7 @@ for SNR in SNRs:
 
     x1, x2 = np.random.normal(size = (n1, 10)), np.random.normal(size = (n2, 10))
     beta, delta = np.array([1] * 5 + [0] * 5).reshape((-1,1)), np.sqrt(1)*np.array([0] * 5 + [1]*5).reshape((-1,1))
-    beta, delta =  5 * beta / np.linalg.norm(beta), (1/SNR) * delta / np.linalg.norm(delta)
+    beta, delta =  5 * beta / np.linalg.norm(beta), (1) * delta / np.linalg.norm(delta)
     y1, y2 = x1 @ (beta + delta) + sigma * np.random.normal(size=(n1, 1)), x2 @ (beta) + sigma * np.random.normal(size = (n2, 1))
     sample_weights = np.array([(1-p)] * n1 + [p] * n2)
     train_data = np.vstack((x1, x2)), np.vstack((y1, y2)), sample_weights
@@ -123,7 +124,7 @@ for SNR in SNRs:
 
 
 
-    with open(f'temp/mse_{iteration}_{SNR}_diff.txt', 'w') as f:
+    with open(f'temp2/mse_{iteration}_{SNR}_diff.txt', 'w') as f:
         for nodes in nodes_list:
             train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
                 test_minority, nodes=int(nodes), weighted=False)
