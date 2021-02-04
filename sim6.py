@@ -49,14 +49,14 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
          evaluate(test_minority, weights = [w, beta])
 
 
-n, p = 1000, 0.9
+n, p = 200, 0.5
 n1, n2 = int(n * p), int(n * (1-p))
 SNRs = [0.01, 0.1, 1, 10, 100]
 sigma = 0.1
 
 
 iteration = int(float(sys.argv[1]))
-gammas = np.logspace(0, 4 , num = 10)
+gammas = np.logspace(0, 3 , num = 10)
 nodes_list = np.rint(10 * gammas).astype('int')
 
 
@@ -94,12 +94,7 @@ for SNR in SNRs:
             f.writelines(str(output)+"\n")
 
 
-            train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
-                test_minority, nodes=int(nodes), weighted=True)
-            output = {'optimization': 'weighted-ERM', 'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
-                'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
-                    'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'same-core'}
-            f.writelines(str(output)+"\n")
+            
 
 
 
@@ -125,6 +120,7 @@ for SNR in SNRs:
 
     with open(f'temp/mse_{iteration}_{SNR}_diff.txt', 'w') as f:
         for nodes in nodes_list:
+
             train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
                 test_minority, nodes=int(nodes), weighted=False)
             output = {'optimization': 'ERM', 'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
@@ -132,11 +128,6 @@ for SNR in SNRs:
                     'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'diff-core'}
             f.writelines(str(output)+"\n")
     
-            train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
-                test_minority, nodes=int(nodes), weighted=True)
-            output = {'optimization': 'weighted-ERM', 'nodes': nodes, 'SNR': SNR, 'train-mse':train_mse,\
-                'train-mse-bal': train_mse_bal, 'majority-mse': majority_mse,\
-                    'minority-mse': minority_mse, 'trainable': 'last-layer', 'setup': 'diff-core'}
-            f.writelines(str(output)+"\n")
+            
     
 

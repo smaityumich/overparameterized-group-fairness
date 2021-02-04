@@ -49,7 +49,7 @@ def mse_overparameter(train_data, test_majority, test_minority, nodes = 100, wei
          evaluate(test_minority, weights = [w, beta])
 
 
-n, p = 900, 0.9
+n, p = 1000, 0.9
 n1, n2 = int(n * p), int(n * (1-p))
 SNRs = [0.001, 0.01, 0.1, 1, 10, 100]
 sigma = 0.1
