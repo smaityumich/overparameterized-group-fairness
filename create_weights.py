@@ -25,3 +25,18 @@ nodes_list = np.rint(10 * gammas).astype('int')
 for nodes in nodes_list:
     w = sample_from_sphere(d, nodes)
     np.save(f'weights/w_{d}_{nodes}.npy', w)
+
+gammas = np.logspace(0, 3, num = 10)
+nodes_list = np.rint(10 * gammas).astype('int')
+
+for nodes in nodes_list:
+    w = sample_from_sphere(d, nodes)
+    np.save(f'weights/w_{d}_{nodes}.npy', w)
+
+gammas = np.logspace(0, 4 , num = 10)
+nodes_list = np.rint(2 * gammas).astype('int')
+
+
+for nodes in nodes_list:
+    w = sample_from_sphere(d, nodes)
+    np.save(f'weights/w_{d}_{nodes}.npy', w)
