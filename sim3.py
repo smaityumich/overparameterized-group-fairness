@@ -60,8 +60,8 @@ gammas = np.logspace(0, 4 , num = 10)
 nodes_list = np.rint(10 * gammas).astype('int')
 
 
-if not os.path.exists('temp/'):
-    os.mkdir('temp/')
+if not os.path.exists('temp_beta_delta/'):
+    os.mkdir('temp_beta_delta/')
 
 
 for SNR in SNRs:
@@ -84,7 +84,7 @@ for SNR in SNRs:
 
 
 
-    # with open(f'temp/mse_{iteration}_{SNR}_same.txt', 'w') as f:
+    # with open(f'temp_beta_delta/mse_{iteration}_{SNR}_same.txt', 'w') as f:
     #     for nodes in nodes_list:
     #         train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
     #             test_minority, nodes=int(nodes), weighted=False)
@@ -123,7 +123,7 @@ for SNR in SNRs:
 
 
 
-    with open(f'temp/mse_{iteration}_{SNR}_diff.txt', 'w') as f:
+    with open(f'temp_beta_delta/mse_{iteration}_{SNR}_diff.txt', 'w') as f:
         for nodes in nodes_list:
             train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
                 test_minority, nodes=int(nodes), weighted=False)

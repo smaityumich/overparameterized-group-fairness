@@ -59,8 +59,8 @@ gammas = np.logspace(0, 4 , num = 10)
 nodes_list = np.rint(10 * gammas).astype('int')
 
 
-if not os.path.exists('temp3/'):
-    os.mkdir('temp3/')
+if not os.path.exists('temp_pi/'):
+    os.mkdir('temp_pi/')
 
 
 for p in ps:
@@ -84,7 +84,7 @@ for p in ps:
 
 
 
-    # with open(f'temp3/mse_{iteration}_{p}_same.txt', 'w') as f:
+    # with open(f'temp_pi/mse_{iteration}_{p}_same.txt', 'w') as f:
     #     for nodes in nodes_list:
     #         train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
     #             test_minority, nodes=int(nodes), weighted=False)
@@ -123,7 +123,7 @@ for p in ps:
 
 
 
-    with open(f'temp3/mse_{iteration}_{p}_diff.txt', 'w') as f:
+    with open(f'temp_pi/mse_{iteration}_{p}_diff.txt', 'w') as f:
         for nodes in nodes_list:
             train_mse, train_mse_bal, majority_mse, minority_mse = mse_overparameter(train_data, test_majority,\
                 test_minority, nodes=int(nodes), weighted=False)
