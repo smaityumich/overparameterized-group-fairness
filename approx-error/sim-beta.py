@@ -95,6 +95,7 @@ for SNR in SNRs:
             output = {'optimization': 'ERM', 'nodes': nodes, 'SNR': SNR, 'missp-mse':mse_misspecified,\
                 'acc-mse': mse_accurate, 'approx-error': approx_error}
             f.writelines(str(output)+"\n")
+            print(str(output) + '\n')
             
     
     
