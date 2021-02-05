@@ -15,17 +15,14 @@ def predict(x, weights):
     z = hidden_layer(x, w)
     return z @ beta
 
-def evaluate(data, weights, sample_weight = []):
-    x, y = data
-    n, _ = x.shape
-    if sample_weight == []:
-        sample_weight = np.array([1]*n)
-    sample_weight = sample_weight/np.sum(sample_weight)
-    y_hat = predict(x, weights)
-    error = (y - y_hat).reshape((-1,))
-    return np.sum(error ** 2 * sample_weight)
+def evaluate(data, w, beta, beta0):
+    x, _ = data
+    y_hat = predict(x, [w, beta])
+    y0 = predict(x, [w, beta0])
+    error = (y0 - y_hat).reshape((-1,))
+    return np.mean(error ** 2)
 
-def mse(data, nodes = 100):
+def mse(data, beta0, nodes = 100):
     train_data, test_data = data
 
     x, y = train_data
@@ -34,14 +31,14 @@ def mse(data, nodes = 100):
     z = hidden_layer(x, w)
     beta = np.linalg.lstsq(z, y)[0]
 
-    return evaluate(test_data, weights=[w, beta])
+    return evaluate(test_data, w, beta, beta0)
 
 
-def approx_error(data_misspecified, data_accurate, nodes = 100):
-    return mse(data_misspecified, nodes=nodes) - mse(data_accurate, nodes = nodes)
+def approx_error(data_misspecified, data_accurate, beta0, nodes = 100):
+    return mse(data_misspecified, beta0, nodes=nodes) - mse(data_accurate, beta0, nodes = nodes)
 
 
-n, p = 1000, 0.9
+n, p = 200, 0.9
 n1, n2 = int(n * p), int(n * (1-p))
 SNRs = [0.01, 0.1, 1, 10, 100]
 sigma = 0.1
@@ -88,8 +85,8 @@ for SNR in SNRs:
 
     with open(f'ERM-beta/beta_{iteration}_{SNR}.txt', 'w') as f:
         for nodes in nodes_list:
-            mse_misspecified = mse(data_misspecified, nodes=nodes)
-            mse_accurate = mse(data_accurate, nodes = nodes)
+            mse_misspecified = mse(data_misspecified, beta0=beta, nodes=nodes)
+            mse_accurate = mse(data_accurate, beta0=beta, nodes = nodes)
             approx_error = mse_misspecified - mse_accurate
             
             output = {'optimization': 'ERM', 'nodes': nodes, 'SNR': SNR, 'missp-mse':mse_misspecified,\

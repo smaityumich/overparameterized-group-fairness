@@ -10,7 +10,7 @@ def sample_from_sphere(n, d):
     return x
 
 
-n = 1000
+n = 200
 gammas = np.logspace(0.01, 1.2 , num = 10)
 nodes_upper = np.rint(n * gammas).astype('int')
 
