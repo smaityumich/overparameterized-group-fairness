@@ -18,7 +18,7 @@ def predict(x, weights):
 def evaluate(data, w, beta, beta0):
     x, _ = data
     y_hat = predict(x, [w, beta])
-    y0 = predict(x, [w, beta0])
+    y0 = x @ beta0
     error = (y0 - y_hat).reshape((-1,))
     return np.mean(error ** 2)
 
