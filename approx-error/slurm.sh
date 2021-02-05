@@ -17,3 +17,4 @@ echo "SLURM_ARRAY_JOB_ID: " $SLURM_ARRAY_JOB_ID
 python3 sim-beta.py $SLURM_ARRAY_TASK_ID
 python3 sim-delta.py $SLURM_ARRAY_TASK_ID
 python3 sim-sigma.py $SLURM_ARRAY_TASK_ID
+python3 sim-pi.py $SLURM_ARRAY_TASK_ID
